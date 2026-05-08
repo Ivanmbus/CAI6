@@ -2,6 +2,8 @@
 
 ## Requisitos previos
 
+Se requiere sistema operativo Windows
+
 | Componente | Versión |
 |------------|---------|
 | **Python** | 3.11 o 3.12 |
@@ -13,7 +15,7 @@
 
 ### 1. Descomprimir el proyecto
 
-### 2. Instalar dependencias
+### 2. Instalar dependencias:  Abrir terminal y ejecutar
 
 **Bloque 1 (ZTNA):**
 ```bash
@@ -75,7 +77,7 @@ python generar_asignaciones.py
 python cargar_a_camunda.py
 ```
 
-### 3. Detener Camunda
+### 3. Detener Camunda cuando se quiera
 ```bash
 docker-compose down
 ```
@@ -99,7 +101,6 @@ docker-compose down
 | Cliente ZTNA | `python cliente_ztna.py --rol medico` |
 | Generar CSV | `cd bloque2_camunda_offline && python generar_asignaciones.py` |
 | Iniciar Camunda | `start_camunda.bat` |
-| Desplegar BPMN | `python deploy_camunda_completo.py` |
 | Cargar instancias | `python cargar_a_camunda.py` |
 | Detener Camunda | `docker-compose down` |
 
