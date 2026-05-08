@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+             targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  <process id="proceso_compras_sanitarias" 
+           name="Proceso de Compras Sanitarias" 
+           isExecutable="true"
+           camunda:historyTimeToLive="30">
+    
+    <startEvent id="StartEvent_1" name="Inicio">
+      <outgoing>Flow_1</outgoing>
+    </startEvent>
+    
+    <userTask id="TareaT1" name="Requerimiento de compra" camunda:candidateUsers="${empleado_t1}">
+      <incoming>Flow_1</incoming>
+      <outgoing>Flow_2</outgoing>
+    </userTask>
+    
+    <userTask id="TareaT21" name="Elaborar prescripciones técnicas" camunda:candidateUsers="${empleado_t21}">
+      <incoming>Flow_2</incoming>
+      <outgoing>Flow_3</outgoing>
+    </userTask>
+    
+    <userTask id="TareaT22" name="Buscar proveedores" camunda:candidateUsers="${empleado_t22}">
+      <incoming>Flow_2</incoming>
+      <outgoing>Flow_3</outgoing>
+    </userTask>
+    
+    <userTask id="TareaT3" name="Aprobación final" camunda:candidateUsers="${empleado_t3}">
+      <incoming>Flow_3</incoming>
+      <outgoing>Flow_4</outgoing>
+    </userTask>
+    
+    <userTask id="TareaT4" name="Recibir y decidir ofertas" camunda:candidateUsers="${empleado_t4}">
+      <incoming>Flow_4</incoming>
+      <outgoing>Flow_5</outgoing>
+    </userTask>
+    
+    <endEvent id="EndEvent_1" name="Fin">
+      <incoming>Flow_5</incoming>
+    </endEvent>
+    
+    <sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="TareaT1"/>
+    <sequenceFlow id="Flow_2" sourceRef="TareaT1" targetRef="TareaT21"/>
+    <sequenceFlow id="Flow_22" sourceRef="TareaT1" targetRef="TareaT22"/>
+    <sequenceFlow id="Flow_3" sourceRef="TareaT21" targetRef="TareaT3"/>
+    <sequenceFlow id="Flow_33" sourceRef="TareaT22" targetRef="TareaT3"/>
+    <sequenceFlow id="Flow_4" sourceRef="TareaT3" targetRef="TareaT4"/>
+    <sequenceFlow id="Flow_5" sourceRef="TareaT4" targetRef="EndEvent_1"/>
+    
+  </process>
+</definitions>

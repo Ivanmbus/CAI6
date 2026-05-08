@@ -6,7 +6,7 @@ from datetime import datetime
 # ========== CONFIGURACIÓN ==========
 CAMUNDA_URL = "http://localhost:8080/engine-rest"
 PROCESS_DEFINITION_KEY = "proceso_compras_sanitarias"  # Cambiar por el ID real en Camunda
-CSV_FILE = "asignaciones_balanceadas_final.csv"
+CSV_FILE = "bloque2_camunda_offline/salida/asignaciones_compras.csv"
 
 # ========== FUNCIONES ==========
 def iniciar_proceso_camunda(instancia_id, asignacion):
