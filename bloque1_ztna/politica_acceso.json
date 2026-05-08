@@ -1,0 +1,20 @@
+{
+    "recursos": [
+        {
+            "uri": "/historias_clinicas/*",
+            "politica": {
+                "roles_permitidos": ["medico", "enfermero"],
+                "ubicaciones_permitidas": ["192.168.0.0/16", "10.0.0.0/8"],
+                "horario_permitido": {
+                    "inicio": "08:00",
+                    "fin": "20:00"
+                },
+                "postura_requerida": {
+                    "antivirus": true,
+                    "firewall": true,
+                    "so_actualizado": true
+                }
+            }
+        }
+    ]
+}
