@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  camunda:
+    image: camunda/camunda-bpm-platform:latest
+    container_name: camunda-insegus
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m
+    volumes:
+      - ./camunda-data:/camunda-db  # Persistencia de datos
+      - ./bpmn:/camunda/resources    # Para desplegar BPMNs automáticamente
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/camunda/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - camunda-network
+
+networks:
+  camunda-network:
+    driver: bridge
+
+volumes:
+  camunda-data:
