@@ -11,11 +11,7 @@
 
 ## Instalación
 
-### 1. Clonar/crear el proyecto
-```bash
-mkdir proyecto_insegus
-cd proyecto_insegus
-```
+### 1. Descomprimir el proyecto
 
 ### 2. Instalar dependencias
 
@@ -25,7 +21,7 @@ cd bloque1_ztna
 pip install -r requirements.txt
 ```
 
-**Script de carga a Camunda:**
+**Script de carga a Camunda:** desde la raíz del proyecto ejecutar
 ```bash
 pip install requests
 ```
@@ -69,22 +65,17 @@ python generar_asignaciones.py
 
 ## Camunda: Despliegue y carga
 
-### 1. Iniciar Camunda
+### 1. Iniciar Camunda y cargar bpmn
 ```bash
 .\start_camunda.bat
 ```
 
-### 2. Desplegar BPMN
-```bash
-python deploy_camunda_completo.py
-```
-
-### 3. Cargar las 20 instancias desde el CSV
+### 2. Cargar las 20 instancias desde el CSV
 ```bash
 python cargar_a_camunda.py
 ```
 
-### 4. Detener Camunda
+### 3. Detener Camunda
 ```bash
 docker-compose down
 ```
