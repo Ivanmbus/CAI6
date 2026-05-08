@@ -112,8 +112,6 @@ class GeneradorInstancias:
             if intentos >= 10:
                 print(f"Advertencia: No se encontró asignación válida en instancia {i+1}")
                 self.instancias.append(None)
-            if not fairness.esta_balanceado():
-                print("Carga desbalanceada detectada")
         
         return self.instancias
     

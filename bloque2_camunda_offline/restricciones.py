@@ -45,7 +45,7 @@ class RestriccionesJerarquia:
         tarea = tareas[tarea_id]
         
         # Verificar rol permitido
-        #print(f"  [DEBUG] Verificando {empleado_id} para {tarea_id}: rol {empleado['rol']} vs {tarea['roles_permitidos']}"  )
+
         if not any(rol in tarea["roles_permitidos"] for rol in empleado["rol"]):
             return False
         
@@ -80,9 +80,9 @@ class RestriccionesFairness:
             )
             for emp in empleados_ids
         }
-        #print(f"[DEBUG] Elegibles: {self.elegibles_por_empleado}")
 
-    def empleado_menos_cargado(self, candidatos):  # ← misma firma de siempre
+
+    def empleado_menos_cargado(self, candidatos): 
         if not candidatos:
             return None
         
@@ -91,16 +91,10 @@ class RestriccionesFairness:
             return self.carga[emp_id] / max(elegibles, 1)
 
         scores = {emp: carga_normalizada(emp) for emp in candidatos}
-        #print(f"  [DEBUG] Scores: {scores}")
+
         return min(candidatos, key=carga_normalizada)
 
     def actualizar_carga(self, asignacion):
         for empleado in asignacion.values():
             self.carga[empleado] += 1
-    
-    def esta_balanceado(self):
-        cargas = list(self.carga.values())
-        if not cargas:
-            return True
-        return (max(cargas) - min(cargas)) <= self.max_diferencia
     
