@@ -45,7 +45,8 @@ class RestriccionesJerarquia:
         tarea = tareas[tarea_id]
         
         # Verificar rol permitido
-        if empleado["rol"] not in tarea["roles_permitidos"]:
+        #print(f"  [DEBUG] Verificando {empleado_id} para {tarea_id}: rol {empleado['rol']} vs {tarea['roles_permitidos']}"  )
+        if not any(rol in tarea["roles_permitidos"] for rol in empleado["rol"]):
             return False
         
         # Verificar jerarquía mínima
@@ -66,13 +67,33 @@ class RestriccionesJerarquia:
         return True
 
 class RestriccionesFairness:
-    """Reparto equitativo de carga de trabajo"""
     
     def __init__(self, empleados_ids, max_diferencia=3):
         self.empleados_ids = empleados_ids
         self.carga = {emp: 0 for emp in empleados_ids}
         self.max_diferencia = max_diferencia
-    
+        # Precalcular elegibilidad una sola vez
+        self.elegibles_por_empleado = {
+            emp: sum(
+                1 for t in tareas.keys()
+                if RestriccionesJerarquia.puede_asignar(emp, t)
+            )
+            for emp in empleados_ids
+        }
+        #print(f"[DEBUG] Elegibles: {self.elegibles_por_empleado}")
+
+    def empleado_menos_cargado(self, candidatos):  # ← misma firma de siempre
+        if not candidatos:
+            return None
+        
+        def carga_normalizada(emp_id):
+            elegibles = self.elegibles_por_empleado.get(emp_id, 1)
+            return self.carga[emp_id] / max(elegibles, 1)
+
+        scores = {emp: carga_normalizada(emp) for emp in candidatos}
+        #print(f"  [DEBUG] Scores: {scores}")
+        return min(candidatos, key=carga_normalizada)
+
     def actualizar_carga(self, asignacion):
         for empleado in asignacion.values():
             self.carga[empleado] += 1
@@ -83,8 +104,3 @@ class RestriccionesFairness:
             return True
         return (max(cargas) - min(cargas)) <= self.max_diferencia
     
-    def empleado_menos_cargado(self, candidatos):
-        """Retorna el empleado con menor carga entre los candidatos"""
-        if not candidatos:
-            return None
-        return min(candidatos, key=lambda e: self.carga[e])

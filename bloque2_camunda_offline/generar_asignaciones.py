@@ -11,7 +11,6 @@ class GeneradorInstancias:
         self.num_instancias = num_instancias
         self.empleados_ids = list(empleados.keys())
         self.instancias = []
-        
     def obtener_candidatos(self, tarea_id, exclude=[]):
         """Retorna lista de empleados que pueden hacer una tarea"""
         candidatos = []
@@ -22,20 +21,18 @@ class GeneradorInstancias:
                 candidatos.append(emp_id)
         return candidatos
     
-    def asignar_t1(self):
+    def asignar_t1(self,fairness):
         candidatos = self.obtener_candidatos("T1")
-        # JVG solo puede T1, darle prioridad si está disponible
-        if "JVG" in candidatos:
-            return "JVG"
-        return random.choice(candidatos)
+        t1 = fairness.empleado_menos_cargado(candidatos) if candidatos else None
+        return t1
     
     def asignar_t21_t22(self, fairness):
         # Asignar T2.1 y T2.2 con SoD y binding
         candidatos_t21 = self.obtener_candidatos("T2.1")
         
+        t21 = fairness.empleado_menos_cargado(candidatos_t21)
         # Forzar binding si GTR es candidato (probabilidad 30%)
-        if "GTR" in candidatos_t21 and random.random() < 0.3:
-            t21 = "GTR"
+        if t21 == "GTR":            
             # Binding: T2.2 debe ser MDS
             if "MDS" in self.obtener_candidatos("T2.2", exclude=[t21]):
                 t22 = "MDS"
@@ -44,7 +41,6 @@ class GeneradorInstancias:
                 candidatos_t22 = self.obtener_candidatos("T2.2", exclude=[t21])
                 t22 = fairness.empleado_menos_cargado(candidatos_t22) if candidatos_t22 else None
         else:
-            t21 = fairness.empleado_menos_cargado(candidatos_t21)
             candidatos_t22 = self.obtener_candidatos("T2.2", exclude=[t21])
             t22 = fairness.empleado_menos_cargado(candidatos_t22)
         
@@ -52,11 +48,11 @@ class GeneradorInstancias:
     
     def asignar_t3_t4(self, fairness, exclude_t21_t22):
         candidatos_t3 = self.obtener_candidatos("T3", exclude=exclude_t21_t22)
-        t3 = fairness.empleado_menos_cargado(candidatos_t3)
+        t3 = fairness.empleado_menos_cargado(candidatos_t3) if candidatos_t3 else None
         
         exclude_t3 = exclude_t21_t22 + [t3]
         candidatos_t4 = self.obtener_candidatos("T4", exclude=exclude_t3)
-        t4 = fairness.empleado_menos_cargado(candidatos_t4)
+        t4 = fairness.empleado_menos_cargado(candidatos_t4) if candidatos_t4 else None
         
         return t3, t4
     
@@ -64,7 +60,7 @@ class GeneradorInstancias:
         asignacion = {}
         
         # T1
-        asignacion["T1"] = self.asignar_t1()
+        asignacion["T1"] = self.asignar_t1(fairness)
         
         # T2.1 y T2.2
         t21, t22 = self.asignar_t21_t22(fairness)
@@ -80,16 +76,25 @@ class GeneradorInstancias:
         return asignacion
     
     def validar_asignacion(self, asignacion):
-        """Valida todas las restricciones"""
-        checks = [
-            RestriccionesSoD.sod_t21_t22(asignacion),
-            RestriccionesSoD.sod_t3_t4(asignacion),
-            RestriccionesBinding.binding_gtr_mds(asignacion),
-            RestriccionesConflicto.conflicto_jvg(asignacion),
-            RestriccionesJerarquia.validar_todas_asignaciones(asignacion)
-        ]
-        return all(checks)
-    
+        if asignacion is None:
+            return False
+        if any(v is None for v in asignacion.values()):
+            return False
+        
+        checks = {
+            "sod_t21_t22":   RestriccionesSoD.sod_t21_t22(asignacion),
+            "sod_t3_t4":     RestriccionesSoD.sod_t3_t4(asignacion),
+            "binding_gtr":   RestriccionesBinding.binding_gtr_mds(asignacion),
+            "conflicto_jvg": RestriccionesConflicto.conflicto_jvg(asignacion),
+            "jerarquia":     RestriccionesJerarquia.validar_todas_asignaciones(asignacion)
+        }
+        
+        fallidos = [k for k, v in checks.items() if not v]
+        if fallidos:
+            print(f"  [DEBUG] Asignacion: {asignacion}")
+            print(f"  [DEBUG] Checks fallidos: {fallidos}")
+        
+        return all(checks.values())
     def generar(self):
         fairness = RestriccionesFairness(self.empleados_ids, max_diferencia=3)
         
@@ -99,8 +104,7 @@ class GeneradorInstancias:
                 asignacion = self.generar_instancia(fairness)
                 if self.validar_asignacion(asignacion):
                     # Actualizar carga para fairness
-                    for emp in asignacion.values():
-                        fairness.carga[emp] += 1
+                    fairness.actualizar_carga(asignacion)
                     self.instancias.append(asignacion)
                     break
                 intentos += 1
@@ -108,6 +112,8 @@ class GeneradorInstancias:
             if intentos >= 10:
                 print(f"Advertencia: No se encontró asignación válida en instancia {i+1}")
                 self.instancias.append(None)
+            if not fairness.esta_balanceado():
+                print("Carga desbalanceada detectada")
         
         return self.instancias
     

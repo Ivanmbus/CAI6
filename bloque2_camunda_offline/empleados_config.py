@@ -3,35 +3,35 @@
 empleados = {
     "JVG": {
         "nombre": "Juan Vidal García",
-        "rol": "DG",
+        "rol": ["DG"],
         "jerarquia": 3,
         "conflicto_intereses": True,  # Solo puede hacer T1
         "especialidad": "direccion"
     },
     "HYV": {
         "nombre": "Helena Yuste Vidal",
-        "rol": "DR",
+        "rol": ["DR", "TR"],
         "jerarquia": 2,
         "conflicto_intereses": False,
         "especialidad": "recursos_sanitarios"
     },
     "PGR": {
         "nombre": "Pedro Gómez Ruiz",
-        "rol": "DM",
+        "rol": ["DM"],
         "jerarquia": 2,
         "conflicto_intereses": False,
         "especialidad": "logistica"
     },
     "MFE": {
         "nombre": "María Fernández Espinosa",
-        "rol": "DE",
+        "rol": ["DE"],
         "jerarquia": 2,
         "conflicto_intereses": False,
         "especialidad": "tecnico_compras"
     },
     "GTR": {
         "nombre": "Gabriel Torres Ramírez",
-        "rol": "TR",
+        "rol": ["TR"],
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "evaluacion",
@@ -41,28 +41,28 @@ empleados = {
     },
     "LPG": {
         "nombre": "Laura Pérez Gil",
-        "rol": "TR",
+        "rol": ["TR", "TC"],  # Puede hacer tareas de ambos roles
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "administrativa"
     },
     "RGB": {
         "nombre": "Raúl Gómez Blanco",
-        "rol": "TR",
+        "rol": ["TR", "TC"],  # Puede hacer tareas de ambos roles
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "administrativa"
     },
     "BJC": {
         "nombre": "Beatriz Jiménez Calderón",
-        "rol": "TR",
+        "rol": ["TR"],
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "finanzas"
     },
     "MDS": {
         "nombre": "Manuel Díaz Sánchez",
-        "rol": "TC",
+        "rol": ["TC"],
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "legal",
@@ -70,21 +70,21 @@ empleados = {
     },
     "HJR": {
         "nombre": "Helena Jiménez Ruiz",
-        "rol": "PS",
+        "rol": ["PS"],
         "jerarquia": 2,
         "conflicto_intereses": False,
         "especialidad": "compras"
     },
     "PTS": {
         "nombre": "Pablo Torres Soto",
-        "rol": "PS",
+        "rol": ["PS"],
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "inventario"
     },
     "IHP": {
         "nombre": "Irene Herrera Pérez",
-        "rol": "PS",
+        "rol": ["PS"],
         "jerarquia": 1,
         "conflicto_intereses": False,
         "especialidad": "calidad"
