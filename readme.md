@@ -35,7 +35,7 @@ pip install requests
 ### Generar certificados
 ```bash
 cd bloque1_ztna
-python generar_certificados_correctos.py
+python generar_certificados_prueba.py
 ```
 
 ### Ejecutar (2 terminales)
@@ -68,7 +68,9 @@ python generar_asignaciones.py
 ## Camunda: Despliegue y carga
 
 ### 1. Iniciar Camunda y cargar bpmn
+Esperar a que el contenedor de camunda este levantado puede tardar unos 30 segundos
 ```bash
+docker compose up -d
 .\start_camunda.bat
 ```
 
